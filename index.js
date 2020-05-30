@@ -40,7 +40,6 @@ var http = require('http')
 var PORT = process.env.PORT || 5000;
 var app = express();
 var server = http.Server(app);
-process.env.token = token;
 
 
 // Run the command loader
@@ -482,4 +481,4 @@ client.on("message", message => {
   message.channel.send(embed) // Let's see if it's working!
 });
 */
-client.login(process.env.token); //Paste Your Bot Token
+client.login(token); //Paste Your Bot Token
