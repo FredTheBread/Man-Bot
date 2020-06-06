@@ -1,7 +1,7 @@
 const Discord = require("discord.js"),
     {
         post
-    } = require("node-superfetch")
+    } = require("node-superfetch");
 
 module.exports = {
     name: "eval",

@@ -49,7 +49,7 @@ module.exports = {
         .setDescription(msg.size > 1900 ? `${msg.substr(0, 1900)}...` : msg)
       );
       return message.channel
-        .send(`Message Has Been Sent Successfully! | <@${message.author.id}>`)
+        .send(`Message Has Been Sent Successfully! <@${message.author.id}>`)
     } catch (err) {
       console.error(err);
       return message.channel

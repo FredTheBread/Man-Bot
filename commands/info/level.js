@@ -28,7 +28,7 @@ module.exports = {
         
         let embed = new discord.MessageEmbed()
     .setAuthor(user.username, message.guild.iconURL())
-    .setColor("#ff2050")
+    .setColor("BLACK")
     .setThumbnail(user.avatarURL())
     .setDescription(`**LEVEL** - ${level}
     **XP** - ${remxp}/${levelxp}`)

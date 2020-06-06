@@ -6,8 +6,6 @@ module.exports = {
     description: "Ban anyone with one shot xD",
     usage: "ban <@user> <reason>",
     run: (client, message, args) => {
-
-
         if (!message.member.hasPermission("BAN_MEMBERS")) {
             return message.channel.send(`**${message.author.username}**, You do not have enough permission to use this command`);
         }
@@ -40,6 +38,6 @@ module.exports = {
         
         message.channel.send(embed)
         
-        target.ban(args[1]);
+        target.ban(args[1]).catch(err => msg.channel.send(err));
     }
 }
