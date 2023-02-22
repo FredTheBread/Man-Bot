@@ -9,7 +9,7 @@ const {
   config
 } = require("dotenv");
 const {
-  prefix,
+  default_prefix,
   token
 } = require("./config.json");
 const client = new Client({
@@ -34,6 +34,7 @@ const {
 var userData = JSON.parse(fs.readFileSync('./userdata.json', 'utf8'));
 const alexa = require('alexa-bot-api');
 var chatbot = new alexa("aw2plm");
+client.categories = fs.readdirSync("./commands")
 
 // Run the command loader
 ["command"].forEach(handler => {
@@ -145,9 +146,9 @@ function userInfo(user) {
 
 client.on("message", async (message, args) => {
   var msg = message.content.toLowerCase();
-  if (msg.startsWith(prefix + 'sexy')) {
+  if (msg.startsWith(default_prefix + 'sexy')) {
     const love = Math.random() * 100;
-    const loveIndex = Math.floor(love / 10);
+    const loveIndex = Math.floor(love / 5);
     const loveLevel = "💖".repeat(loveIndex) + "💔".repeat(10 - loveIndex);
 
     const embed = new discord.MessageEmbed()
@@ -165,13 +166,14 @@ client.on("message", async message => {
 
   if (message.author.bot) return;
   if (!message.guild) return;
+  let prefix = db.get(`prefix_${message.guild.id}`)
+  if (prefix === null) prefix = default_prefix;
 
-  let pref = db.get(`prefix.${message.guild.id}`);
-  let prefix;
-  // If message.member is uncached, cache it.
+  if (!message.content.startsWith(prefix)) return;
+
   if (!message.member) message.member = await message.guild.fetchMember(message);
 
-  const args = message.content.slice(prefix).trim().split(/ + /g);
+  const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const cmd = args.shift().toLowerCase();
 
   if (cmd.length === 0) return;
@@ -186,46 +188,7 @@ client.on("message", async message => {
     command.run(client, message, args);
 
   return addexp(message)
-});
 
-
-client.on('message', async message => {
-  if (message.author.bot) return; // Ignore if the user is a bot.
-
-  let pref = db.get(`prefix.${message.guild.id}`);
-  let prefix;
-
-  if (!pref) {
-    prefix = "!"; // If the server doesn't have any custom prefix, return default.
-  } else {
-    prefix = pref;
-  }
-  if (!message.content.startsWith(prefix)) return; // use this. so your bot will be only executed with prefix.
-
-  let args = message.content.slice(prefix.length).trim().split(/ +/g);
-  let msg = message.content.toLowerCase();
-  let cmd = args.shift().toLowerCase();
-
-
-  message.flags = [];
-  while (args[0] && args[0][0] === "-") {
-    message.flags.push(args.shift().slice(1)); // Message Flags: -default, -ban, -parameter
-  }
-
-  if (msg.startsWith(prefix + "prefix")) {
-    if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send("You don't have the permissions to do this!");
-    let data = db.get(`prefix.${message.guild.id}`);
-    if (message.flags[0] === "default") {
-      await db.delete(`prefix.${message.guild.id}`);
-      return message.channel.send("The server prefix has been changed back to default. `!`");
-    }
-
-    let symbol = args.join(" ");
-    if (!symbol) return message.channel.send("Please input the prefix.");
-
-    db.set(`prefix.${message.guild.id}`, symbol);
-    return message.channel.send(`The server prefix has been changed to **${symbol}**`);
-  }
 });
 
 client.on("message", async message => {
@@ -284,7 +247,7 @@ client.on('message', (message, args) => {
   var sender = message.author;
   var msg = message.content.toLowerCase();
   let user = message.mentions.users.first()
-  if (msg.startsWith( + 'userstats')) {
+  if (msg.startsWith(default_prefix+'userstats')) {
     if (msg === prefix + 'userstats') {
       message.channel.send(userInfo(sender));
     }
@@ -301,7 +264,7 @@ client.on('message', (message, args) => {
 
 client.on("message", message => {
   var msg = message.content.toLowerCase();
-  if (msg.startsWith(prefix + "spotify")) {
+  if (msg.startsWith(default_prefix + "spotify")) {
     let user;
     if (message.mentions.users.first()) {
       user = message.mentions.users.first();
@@ -347,7 +310,7 @@ client.on("message", message => {
 
 client.on("message", message => {
   var msg = message.content.toLowerCase();
-  if (msg.startsWith(prefix + "meme") || msg.startsWith(prefix + "memes")) {
+  if (msg.startsWith(default_prefix + "meme") || msg.startsWith(default_prefix + "memes")) {
     const got = require('got'),
       {
         MessageEmbed
